@@ -21,6 +21,75 @@
         .btn { padding: 6px 12px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
         .approve-btn { background: #16c784; color: black; }
         .reject-btn { background: #ff4d4d; color: white; }
+
+        /* BACKDROP */
+        #reasonModal {
+            display:none;
+            position:fixed;
+            top:0; left:0;
+            width:100%; height:100%;
+            background:rgba(0,0,0,0.65);
+            justify-content:center;
+            align-items:center;
+            z-index: 9999;
+        }
+
+        /* MODAL BOX */
+        .modal-box {
+            background:#0d1b3d;
+            border:2px solid #f5c542;
+            padding:25px;
+            width:420px;
+            border-radius:14px;
+            color:white;
+            box-shadow:0 0 20px rgba(245,197,66,0.4);
+            animation: pop 0.2s ease-out;
+        }
+
+        @keyframes pop {
+            from { transform:scale(0.8); opacity:0; }
+            to { transform:scale(1); opacity:1; }
+        }
+
+        .modal-box h3 {
+            margin-top:0;
+            margin-bottom:15px;
+            font-size:22px;
+            color:#f5c542;
+            text-align:center;
+        }
+
+        .modal-select, .modal-textarea {
+            width:100%;
+            padding:10px;
+            border-radius:8px;
+            border:1px solid #f5c542;
+            background:#12264d;
+            color:white;
+            margin-bottom:12px;
+            font-size:14px;
+        }
+
+        .modal-textarea { height:90px; display:none; }
+
+        .modal-btn {
+            padding:10px 18px;
+            border:none;
+            border-radius:8px;
+            font-weight:bold;
+            cursor:pointer;
+            margin-right:10px;
+        }
+
+        .cancel-btn {
+            background:#888;
+            color:#fff;
+        }
+
+        .submit-btn {
+            background:#f5c542;
+            color:#0d1b3d;
+        }
     </style>
 </head>
 
@@ -66,14 +135,13 @@
 
             <button th:if="${loan.status.name() == 'PENDING'}"
                     class="btn approve-btn"
-                    th:attr="onclick=|openModal('APPROVE', ${loan.id})|">
+                    th:onclick="|openModal('APPROVE', ${loan.id})|">
                 Approve
             </button>
 
-
             <button th:if="${loan.status.name() == 'PENDING'}"
                     class="btn reject-btn"
-                    th:attr="onclick=|openModal('REJECT', '${loan.id}')|">
+                    th:onclick="|openModal('REJECT', ${loan.id})|">
                 Reject
             </button>
         </td>
@@ -82,82 +150,121 @@
 </table>
 
 
-<!-- FINAL SINGLE MODAL -->
-<div id="reasonModal" style="
-    display:none;
-    position:fixed;
-    top:0; left:0;
-    width:100%; height:100%;
-    background:rgba(0,0,0,0.5);
-    justify-content:center;
-    align-items:center;">
 
-    <div style="background:white; padding:20px; width:350px; border-radius:10px; color:black;">
-
+<!-- ************* FINAL BLUE–GOLD MODAL ************* -->
+<div id="reasonModal">
+    <div class="modal-box">
         <h3 id="modalTitle"></h3>
 
-        <textarea id="reasonInput"
-                  placeholder="Enter reason"
-                  style="width:100%; height:90px;"></textarea>
+        <select id="reasonDropdown" class="modal-select" onchange="toggleOtherReason()">
+            <option value="">-- Select a reason --</option>
 
-        <br><br>
+            <!-- Approve options -->
+            <option value="Verified & Approved" class="approve-option">Verified & Approved</option>
+            <option value="Income Criteria Met" class="approve-option">Income Criteria Met</option>
+            <option value="Documents Verified" class="approve-option">Documents Verified</option>
 
-        <button onclick="closeModal()">Cancel</button>
-        <button onclick="submitLoanAction()">Submit</button>
+            <!-- Reject options -->
+            <option value="Low Credit Score" class="reject-option">Low Credit Score</option>
+            <option value="Incomplete Documents" class="reject-option">Incomplete Documents</option>
+            <option value="Failed Verification" class="reject-option">Failed Verification</option>
+
+            <option value="other">Other</option>
+        </select>
+
+        <textarea id="reasonInput" class="modal-textarea" placeholder="Enter reason"></textarea>
+
+        <div style="margin-top:15px; text-align:right;">
+            <button class="modal-btn cancel-btn" onclick="closeModal()">Cancel</button>
+            <button class="modal-btn submit-btn" onclick="submitLoanAction()">Submit</button>
+        </div>
     </div>
 </div>
+
 
 <script>
     let currentLoanId = null;
     let currentAction = null;
+function openModal(action, loanId) {
+    currentLoanId = loanId;
+    currentAction = action;
 
-    function openModal(action, loanId) {
-        currentLoanId = loanId;
-        currentAction = action;
-        document.getElementById("modalTitle").innerText =
-                action === "APPROVE" ? "Approve Loan" : "Reject Loan";
+    document.getElementById("modalTitle").innerText =
+        action === "APPROVE" ? "Approve Loan" : "Reject Loan";
 
-        document.getElementById("reasonModal").style.display = "flex";
+    document.getElementById("reasonDropdown").value = "";
+    document.getElementById("reasonInput").style.display = "none";
+    document.getElementById("reasonInput").value = "";
+
+    // First hide all options
+    document.querySelectorAll(".approve-option, .reject-option").forEach(opt => {
+        opt.style.display = "none";
+    });
+
+    // Show only relevant options
+    if (action === "APPROVE") {
+        document.querySelectorAll(".approve-option").forEach(opt => {
+            opt.style.display = "block";
+        });
+    } else {
+        document.querySelectorAll(".reject-option").forEach(opt => {
+            opt.style.display = "block";
+        });
+    }
+
+    // Always show "Other"
+    document.querySelector("option[value='other']").style.display = "block";
+
+    document.getElementById("reasonModal").style.display = "flex";
+}
+
+
+    function toggleOtherReason() {
+        const dropdown = document.getElementById("reasonDropdown");
+        const textarea = document.getElementById("reasonInput");
+        textarea.style.display = dropdown.value === "other" ? "block" : "none";
     }
 
     function closeModal() {
+        document.getElementById("reasonDropdown").value = "";
         document.getElementById("reasonInput").value = "";
         document.getElementById("reasonModal").style.display = "none";
     }
 
-   function submitLoanAction() {
-    const reason = document.getElementById("reasonInput").value.trim();
+    function submitLoanAction() {
+        const dropdownValue = document.getElementById("reasonDropdown").value;
+        const otherText = document.getElementById("reasonInput").value.trim();
 
-    if (reason === "") {
-        alert("Reason cannot be empty!");
-        return;
+        let finalReason = dropdownValue === "other" ? otherText : dropdownValue;
+
+        if (!finalReason || finalReason.trim() === "") {
+            alert("Please select or enter a reason!");
+            return;
+        }
+
+        const form = document.createElement("form");
+        form.method = "post";
+
+        form.action = currentAction === "APPROVE"
+            ? "/admin/loans/approve"
+            : "/admin/loans/reject";
+
+        let loanIdInput = document.createElement("input");
+        loanIdInput.type = "hidden";
+        loanIdInput.name = "loanId";
+        loanIdInput.value = currentLoanId;
+
+        let reasonInput = document.createElement("input");
+        reasonInput.type = "hidden";
+        reasonInput.name = "reason";
+        reasonInput.value = finalReason;
+
+        form.appendChild(loanIdInput);
+        form.appendChild(reasonInput);
+
+        document.body.appendChild(form);
+        form.submit();
     }
-
-    const form = document.createElement("form");
-    form.method = "post";
-
-    form.action = currentAction === "APPROVE"
-        ? "/admin/loans/approve"
-        : "/admin/loans/reject";
-
-    // FIX: Don't use Thymeleaf for JS values
-    let loanIdInput = document.createElement("input");
-    loanIdInput.type = "hidden";
-    loanIdInput.name = "loanId";
-    loanIdInput.value = currentLoanId;
-
-    let reasonInput = document.createElement("input");
-    reasonInput.type = "hidden";
-    reasonInput.name = "reason";
-    reasonInput.value = reason;
-
-    form.appendChild(loanIdInput);
-    form.appendChild(reasonInput);
-
-    document.body.appendChild(form);
-    form.submit();
-}
-
 </script>
 
 </body>

@@ -134,9 +134,18 @@ public class LoanService {
     @Transactional
     public Loan approveLoan(Long loanId, String reason) {
 
+        System.out.println("\n==============================");
+        System.out.println("APPROVE LOAN START");
+        System.out.println("Loan ID received: " + loanId);
+        System.out.println("==============================");
+
         Loan loan = findById(loanId);
 
+        System.out.println("Loan found. Status = " + loan.getStatus());
+        System.out.println("Account Number = " + loan.getAccountNumber());
+
         if (loan.getStatus() != LoanStatus.PENDING) {
+            System.out.println("ERROR: Loan already processed!");
             throw new IllegalStateException("Loan already processed.");
         }
 
@@ -144,28 +153,35 @@ public class LoanService {
         loan.setStatus(LoanStatus.APPROVED);
         loan.setApprovedAt(LocalDate.now());
         loanRepo.save(loan);
+        System.out.println("Loan status set to APPROVED.");
 
         // 2️⃣ Disburse (credit money)
+        System.out.println("Calling disburseLoanInternal...");
         disburseLoanInternal(loan);
+        System.out.println("Loan disbursed successfully.");
 
-        // 3️⃣ Try to send email, but DO NOT rollback if it fails
+        // 3️⃣ Try to send email
         try {
             Account acc = accountRepo.findByAccountNumber(loan.getAccountNumber())
                     .orElse(null);
 
             if (acc != null) {
+                System.out.println("Sending approval email to: " + acc.getEmail());
                 emailService.sendLoanApprovedEmail(acc.getEmail(), loan);
             } else {
-                System.err.println("Account not found for loan " + loanId);
+                System.err.println("ERROR: Account not found for loan " + loanId);
             }
 
         } catch (Exception ex) {
-            // Just log. Don't rethrow. This avoids transaction rollback.
             System.err.println("Failed to send loan approval email: " + ex.getMessage());
         }
 
+        System.out.println("=== APPROVE LOAN END ===");
+        System.out.println("==============================\n");
+
         return loan;
     }
+
 
 
     // ===================================================================
@@ -208,15 +224,17 @@ public class LoanService {
         Account acc = accountRepo.findByAccountNumber(loan.getAccountNumber())
                 .orElseThrow(() -> new RuntimeException("Account not found"));
 
-        // create loan credit transaction
+
         Transaction tx = new Transaction();
         tx.setTransactionId(UUID.randomUUID().toString().substring(0, 10).toUpperCase());
         tx.setType("LOAN_CREDITED");
         tx.setSenderAccountNumber("NEXA-BANK");
         tx.setReceiverAccountNumber(acc.getAccountNumber());
+        tx.setAccountNumber(acc.getAccountNumber()); // FIX 1
         tx.setAmount(loan.getAmount());
         tx.setReason("Loan credited to account");
         tx.setCreatedAt(LocalDateTime.now());
+        tx.setTransactionTime(LocalDateTime.now());  // 💥 FIX 2 (required)
         tx.setBalanceAfter(acc.getBalance().add(loan.getAmount()));
 
         // update balance

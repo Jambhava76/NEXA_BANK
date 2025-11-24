@@ -3,102 +3,134 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexa Bank - Welcome</title>
+    <title>Nexa Bank</title>
 
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
         body {
-            background: linear-gradient(to right, #0d1b3d, #1d3a73);
-            height: 100vh;
             margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #062045, #0a3781);
+            height: 100vh;
+            color: white;
+            overflow: hidden;
         }
 
-        .welcome-container {
-            background: #ffffff;
-            border-radius: 20px;
-            padding: 50px;
-            display: flex;
-            width: 80%;
-            max-width: 1300px;
-            min-height: 420px;
-            box-shadow: 0px 0px 35px rgba(255, 215, 0, 0.35);
-            color: #1d3a73;
+        /* Navbar */
+        .navbar-custom {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            padding: 15px 60px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        /* Dividing into two halves */
-        .left, .right {
-            width: 50%;
+        .navbar-brand {
+            font-size: 26px;
+            font-weight: 700;
+            color: #ffcc33 !important;
         }
 
-        .left {
+        /* HERO SECTION */
+        .hero {
             display: flex;
             justify-content: center;
             align-items: center;
+            height: calc(100vh - 80px);
+            padding: 0 40px;
         }
 
-        .left img {
-            width: 85%;
-            max-width: 300px;
+        .hero-left {
+            margin-right: 70px; /* PERFECT spacing added */
         }
 
-        .right {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            padding-left: 40px;
+        .hero-right {
+            margin-left: 0px; /* Reset negative spacing */
         }
 
-        .right h1 {
-            font-size: 42px;
-            color: #0d1b3d;
+        .hero-right h1 {
+            font-size: 54px;
             font-weight: 700;
+            line-height: 1.2;
         }
 
-        .right p {
-            font-size: 18px;
-            margin-top: 10px;
-            color: #2a4b74;
+        .hero-right p {
+            font-size: 20px;
+            max-width: 500px;
+            margin-top: 15px;
+            opacity: 0.95;
+            line-height: 1.6;
         }
 
-        .get-started-btn {
-            background-color: #f7d65b;
+        .btn-start {
+            background: #ffcc33;
             border: none;
-            padding: 12px 32px;
-            border-radius: 8px;
-            font-size: 18px;
-            font-weight: bold;
-            transition: 0.3s;
+            padding: 14px 42px;
+            border-radius: 10px;
+            font-size: 20px;
+            font-weight: 700;
+            margin-top: 30px;
+            color: #1b1b1b;
+            transition: 0.3s ease;
+            box-shadow: 0px 4px 15px rgba(255, 204, 51, 0.5);
         }
 
-        .get-started-btn:hover {
-            background-color: #ffd600;
-            transform: scale(1.08);
+        .btn-start:hover {
+            background: #ffd84d;
+            transform: translateY(-4px);
+            box-shadow: 0px 6px 18px rgba(255, 204, 51, 0.8);
+        }
+
+        /* Light effect */
+        .glow {
+            position: absolute;
+            width: 700px;
+            height: 700px;
+            background: radial-gradient(circle, rgba(255,255,255,0.15), transparent 60%);
+            top: -150px;
+            right: -150px;
+            z-index: -1;
         }
     </style>
-
 </head>
+
 <body>
 
-<div class="welcome-container">
-    <div class="left">
-        <!-- ✅ Image loads from /static -->
-        <img th:src="@{/bank.png}" alt="Bank Icon">
+<!-- NAVBAR -->
+<div class="navbar-custom d-flex justify-content-between">
+    <span class="navbar-brand">Nexa Bank</span>
+</div>
+
+<div class="glow"></div>
+
+<!-- HERO SECTION -->
+<div class="hero">
+
+    <div class="hero-left">
+        <!-- Bordered logo -->
+        <div style="
+            background: #ffffff;
+            padding: 22px;
+            border-radius: 20px;
+            border: 4px solid rgba(255,255,255,0.25);
+            box-shadow: 0 8px 22px rgba(0,0,0,0.4);
+        ">
+            <img th:src="@{/bank.png}" alt="Bank Logo" style="width:300px;">
+        </div>
     </div>
 
-    <div class="right">
-        <h1>Welcome to Nexa Bank</h1>
-        <p>Your Trusted Partner for Safe, Smart and Secure Banking.</p>
-        <a href="/choose">
+    <div class="hero-right">
+        <h1>Banking Made<br>Simple, Secure & Smart</h1>
+        <p>
+            Nexa Bank brings you modern, fast, and secure banking solutions
+            designed for your future — with trust at the core.
+        </p>
 
-        <button class="get-started-btn mt-4">Get Started →</button>
+        <a href="/choose">
+            <button class="btn-start">Get Started →</button>
         </a>
     </div>
+
 </div>
 
 </body>

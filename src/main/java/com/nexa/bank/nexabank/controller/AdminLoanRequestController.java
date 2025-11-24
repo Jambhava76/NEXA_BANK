@@ -43,8 +43,10 @@ public class AdminLoanRequestController {
             loanService.approveLoan(loanId, reason);
             ra.addFlashAttribute("success", "Loan Approved & Disbursed!");
         } catch (Exception e) {
+            e.printStackTrace();  // ← add this line
             ra.addFlashAttribute("error", "Approve failed: " + e.getMessage());
         }
+
 
         return "redirect:/admin/loan-requests";
     }
