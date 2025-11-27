@@ -2,165 +2,251 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Customer Login - Nexa Bank</title>
+    <title>Nexa Bank – Customer Login</title>
+
     <style>
         body {
             margin: 0;
             padding: 0;
             height: 100vh;
             display: flex;
+            align-items: center;
             justify-content: center;
-            align-items: center;
-            background: linear-gradient(to right, #0d1b3d, #1d3a73);
-            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #062045, #0a3781);
+            font-family: "Segoe UI", sans-serif;
         }
 
-        .login-container {
-            background: #ffffff;
-            width: 500px;
-            padding: 45px;
-            border-radius: 18px;
+        /* MAIN WRAPPER */
+        .main-wrapper {
+            display: flex;
+            width: 920px;
+            height: 560px;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+            border-radius: 22px;
+            overflow: hidden;
+            box-shadow: 0 0 40px rgba(0,0,0,0.35);
+        }
+
+        /* LEFT SIDE */
+        .left-panel {
+            width: 45%;
+            background: linear-gradient(135deg, #0b3a84, #062045);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
             text-align: center;
-            box-shadow: 0px 0px 30px rgba(255, 215, 0, 0.3);
+            padding: 30px;
         }
 
-        h2 {
-            font-size: 32px;
+        .left-panel img {
+            width: 170px;
+            margin-bottom: 20px;
+            filter: drop-shadow(0px 6px 15px rgba(0,0,0,0.3));
+        }
+
+        .left-panel h1 {
+            font-size: 34px;
             font-weight: 700;
-            color: #0d1b3d;
+            color: #ffffff;
+            margin-bottom: 8px;
+        }
+
+        .left-panel p {
+            font-size: 17px;
+            color: #e6eaf5;
+            opacity: 0.95;
+            width: 85%;
+            line-height: 1.6;
+        }
+
+        /* LOGIN FORM SECTION */
+        .login-card {
+            width: 55%;
+            background: #ffffff;
+            padding: 50px 55px;
+        }
+
+        .login-card h2 {
+            font-size: 28px;
             margin-bottom: 25px;
+            color: #062045;
+            font-weight: 700;
         }
 
-        input[type="text"], input[type="password"] {
+        /* INPUT FIELDS */
+        .input-box {
             width: 100%;
-            padding: 14px;
-            margin-top: 12px;
-            border-radius: 8px;
-            border: 1px solid #ccc;
+            margin-top: 18px;
+        }
+
+        .input-box input {
+            width: 100%;
+            padding: 14px 16px;
+            border-radius: 12px;
+            border: 1px solid #c9c9c9;
+            outline: none;
             font-size: 16px;
+            transition: 0.25s;
         }
 
-        .pin-row {
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-            gap: 8px;
-            font-size: 14px;
+        .input-box input:focus {
+            border-color: #0b3a84;
+            box-shadow: 0 0 10px rgba(11,58,132,0.25);
+        }
+
+        .error-msg {
+            color: red;
+            font-size: 13px;
             margin-top: 5px;
-            color: #333;
+            text-align: left;
         }
 
-        /* Captcha layout */
-        .captcha-container {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-top: 22px;
-        }
-
-        .captcha-label {
-            font-weight: 600;
-            color: #0d1b3d;
+        /* CAPTCHA SECTION */
+        .captcha-section {
+            margin-top: 25px;
         }
 
         .captcha-box {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 14px;
         }
 
         .captcha-display {
-            background: #0d1b3d;
+            background: #062045;
             color: #ffffff;
-            padding: 10px 22px;
-            border-radius: 6px;
-            font-weight: bold;
-            font-size: 16px;
+            padding: 14px 32px;
+            border-radius: 10px;
+            font-size: 20px;
+            font-weight: 700;
             letter-spacing: 3px;
+            min-width: 140px;
+            text-align: center;
         }
 
         .refresh-btn {
-            font-size: 20px;
+            font-size: 22px;
             cursor: pointer;
-            color: #0d1b3d;
-            transition: 0.3s;
+            user-select: none;
+            color: #062045;
+            transition: 0.3s ease;
         }
 
         .refresh-btn:hover {
-            color: #f7d65b;
+            color: #e9c53f;
             transform: rotate(90deg);
         }
 
+        /* CAPTCHA INPUT */
+        #captchaInput {
+            margin-top: 10px;
+            padding: 12px;
+            width: 75%;
+            border-radius: 10px;
+            border: 1px solid #c9c9c9;
+        }
+
+        /* LOGIN BUTTON */
         .btn-login {
+            width: 100%;
+            margin-top: 30px;
+            padding: 14px;
             background: #f7d65b;
             border: none;
-            padding: 14px;
-            margin-top: 25px;
-            width: 100%;
-            border-radius: 8px;
-            font-size: 18px;
-            font-weight: 600;
+            border-radius: 12px;
+            font-size: 20px;
+            font-weight: 700;
+            color: #1a1a1a;
             cursor: pointer;
             transition: 0.3s;
         }
 
         .btn-login:hover {
-            background: #ffd600;
+            background: #ffdf4d;
             transform: scale(1.03);
         }
 
-        a {
-            display: block;
-            margin-top: 15px;
-            font-size: 15px;
-            color: #0d1b3d;
-            text-decoration: none;
-            font-weight: 500;
+        /* LINKS */
+        .login-links {
+            margin-top: 20px;
+            text-align: center;
         }
 
-        .error-msg {
-            color: red;
-            font-size: 14px;
-            margin-top: 5px;
+        .login-links a {
+            display: block;
+            text-decoration: none;
+            color: #062045;
+            font-size: 15px;
+            font-weight: 600;
+            margin-top: 6px;
         }
+
     </style>
 </head>
 
 <body>
-<div class="login-container">
-    <h2>Customer Login</h2>
 
-    <form th:action="@{/login-request-otp}" method="post" onsubmit="return validateForm()">
-        <!-- Account Number -->
-        <input type="text" id="accNo" name="accountNumber" placeholder="Account Number" maxlength="12" required>
-        <p id="accError" class="error-msg"></p>
+<div class="main-wrapper">
 
-        <!-- PIN -->
-        <input type="password" id="pinField" name="pin" placeholder="PIN" maxlength="4" required disabled>
-        <p id="pinError" class="error-msg"></p>
+    <!-- LEFT SIDE -->
+    <div class="left-panel">
+        <img th:src="@{/bank.png}" alt="Bank Logo">
+        <h1>Nexa Bank</h1>
+        <p>Secure • Smart • Modern Banking<br>Access your dashboard safely.</p>
+    </div>
 
-        <div class="pin-row">
-            <input type="checkbox" id="showPin" onclick="togglePINVisibility()"> Show PIN
-        </div>
+    <!-- LOGIN CARD -->
+    <div class="login-card">
 
-        <!-- CAPTCHA (inline layout) -->
-        <div class="captcha-container">
-            <label class="captcha-label">Enter CAPTCHA</label>
-            <div class="captcha-box">
-                <span class="captcha-display" id="captchaText" th:text="${captcha}"></span>
-                <span class="refresh-btn" onclick="generateCaptcha()">&#x21bb;</span>
+        <h2>Customer Login</h2>
+
+        <form th:action="@{/login-request-otp}" method="post">
+
+            <!-- ACCOUNT NUMBER -->
+            <div class="input-box">
+                <input type="text" id="accNo" name="accountNumber"
+                       placeholder="Enter Your Account Number" maxlength="12" required>
+                <p id="accError" class="error-msg"></p>
             </div>
+
+            <!-- PIN -->
+            <div class="input-box">
+                <input type="password" id="pinField" name="pin"
+                       placeholder="Enter PIN" maxlength="4" required disabled>
+                <p id="pinError" class="error-msg"></p>
+            </div>
+
+            <label style="font-size:14px;">
+                <input type="checkbox" onclick="togglePINVisibility()"> Show PIN
+            </label>
+
+            <!-- CAPTCHA -->
+            <div class="captcha-section">
+                <div class="captcha-box">
+                    <span class="captcha-display" id="captchaText" th:text="${captcha}"></span>
+                    <span class="refresh-btn" onclick="generateCaptcha()">&#x21bb;</span>
+                </div>
+
+                <input type="hidden" id="captchaActual" name="captcha" th:value="${captcha}">
+                <input type="text" id="captchaInput" name="captchaInput"
+                       placeholder="Enter CAPTCHA" maxlength="6" required disabled>
+                <p id="captchaError" class="error-msg"></p>
+            </div>
+
+            <!-- LOGIN BUTTON -->
+            <button type="submit" class="btn-login" id="loginBtn" disabled>Login</button>
+
+        </form>
+
+        <div class="login-links">
+
+            <a href="/create-account">Open New Account</a>
         </div>
 
-        <input type="hidden" id="captchaActual" name="captcha" th:value="${captcha}">
-        <input type="text" id="captchaInput" name="captchaInput" placeholder="Enter CAPTCHA Here" maxlength="6" required disabled>
-        <p id="captchaError" class="error-msg"></p>
+    </div>
 
-        <button type="submit" class="btn-login" id="loginBtn" disabled>Login</button>
-    </form>
-
-    <a href="/admin">Admin Login</a>
-    <a href="/create-account">Open New Account</a>
 </div>
 
 <script>
@@ -177,7 +263,6 @@
         document.getElementById("captchaActual").value = captcha;
     }
 
-    // Validation functions
     const accNo = document.getElementById("accNo");
     const pin = document.getElementById("pinField");
     const captchaInput = document.getElementById("captchaInput");
@@ -185,10 +270,8 @@
 
     accNo.addEventListener("input", () => {
         const accError = document.getElementById("accError");
-        const value = accNo.value.trim();
-
-        if (!/^[A-Za-z0-9]{8,12}$/.test(value)) {
-            accError.textContent = "Account number must be 8–12 characters (letters & numbers only).";
+        if (!/^[A-Za-z0-9]{8,12}$/.test(accNo.value.trim())) {
+            accError.textContent = "Account number must be 8–12 characters.";
             pin.disabled = true;
         } else {
             accError.textContent = "";
@@ -199,10 +282,8 @@
 
     pin.addEventListener("input", () => {
         const pinError = document.getElementById("pinError");
-        const value = pin.value.trim();
-
-        if (!/^[0-9]{4}$/.test(value)) {
-            pinError.textContent = "PIN must be exactly 4 digits.";
+        if (!/^[0-9]{4}$/.test(pin.value.trim())) {
+            pinError.textContent = "PIN must be 4 digits.";
             captchaInput.disabled = true;
         } else {
             pinError.textContent = "";
@@ -213,10 +294,10 @@
 
     captchaInput.addEventListener("input", () => {
         const captchaError = document.getElementById("captchaError");
-        const actual = document.getElementById("captchaActual").value.trim();
+        const correct = document.getElementById("captchaActual").value.trim();
 
-        if (captchaInput.value.trim() !== actual) {
-            captchaError.textContent = "Incorrect CAPTCHA, please try again.";
+        if (captchaInput.value.trim() !== correct) {
+            captchaError.textContent = "Incorrect CAPTCHA.";
             loginBtn.disabled = true;
         } else {
             captchaError.textContent = "";
@@ -227,16 +308,13 @@
     function validateAll() {
         const accValid = /^[A-Za-z0-9]{8,12}$/.test(accNo.value.trim());
         const pinValid = /^[0-9]{4}$/.test(pin.value.trim());
-        const captchaMatch = captchaInput.value.trim() === document.getElementById("captchaActual").value.trim();
+        const capMatch = captchaInput.value.trim() === document.getElementById("captchaActual").value.trim();
 
-        loginBtn.disabled = !(accValid && pinValid && captchaMatch);
-    }
-
-    function validateForm() {
-        return !loginBtn.disabled;
+        loginBtn.disabled = !(accValid && pinValid && capMatch);
     }
 
     window.onload = generateCaptcha;
 </script>
+
 </body>
 </html>

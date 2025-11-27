@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <title>Set New PIN — Nexa Bank</title>
+
+    <style>
+        .navbar {
+            background: #0d1b3d;
+            color: #f5c542;
+            padding: 18px 40px;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            box-shadow:0 0 20px rgba(0,0,0,0.25);
+        }
+        .back-btn {
+            background:#f5c542;
+            color:#0d1b3d;
+            padding:10px 20px;
+            border-radius:8px;
+            text-decoration:none;
+            font-weight:700;
+        }
+
+        body {
+            font-family:'Segoe UI',sans-serif;
+            background:#f5f7fb;
+            margin:0;
+        }
+
+        .card {
+            width:min(750px, 90%);
+            margin:60px auto;
+            background:white;
+            border-radius:18px;
+            padding:40px;
+            box-shadow:0 25px 50px rgba(0,0,0,0.1);
+        }
+
+        h2 { color:#0d1b3d; }
+        label { font-weight:600; margin-top:12px; display:block; color:#0d1b3d; }
+
+        /* SMALL 4-DIGIT BOX */
+        .pin-box {
+            width:150px;
+            padding:12px;
+            border-radius:8px;
+            border:1px solid #d6e0fa;
+            text-align:center;
+            font-size:20px;
+            letter-spacing:3px;
+            margin-top:6px;
+        }
+
+        .pin-box:focus {
+            border-color:#0d1b3d;
+            outline:none;
+        }
+
+        .checkbox-row {
+            margin-top:10px;
+            display:flex;
+            align-items:center;
+            gap:8px;
+            color:#0d1b3d;
+        }
+
+        .btn {
+            background:#f7d65b;
+            color:#0d1b3d;
+            padding:12px 24px;
+            border-radius:8px;
+            border:none;
+            cursor:pointer;
+            margin-top:25px;
+            font-weight:700;
+            font-size:16px;
+        }
+
+        .btn:hover {
+            background:#ffd84d;
+            transform:scale(1.05);
+        }
+
+        .note { color:#607299; margin-top:8px; font-size:14px; }
+
+        .error {
+            color:#b00020;
+            margin-top:6px;
+            font-weight:600;
+            font-size:14px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="navbar">
+    <h1>NEXA BANK</h1>
+    <a th:href="@{'/dashboard'(accountNumber=${accountNumber})}" class="back-btn">← Back to Dashboard</a>
+</div>
+
+<div class="card">
+    <h2>Set New PIN</h2>
+
+    <p class="note">Enter a new <b>4-digit PIN</b>. An OTP will be sent to your registered email.</p>
+
+    <form th:action="@{/change-pin/send-otp}" method="post" onsubmit="return validateBeforeSubmit()">
+
+        <input type="hidden" id="currentPinHidden" th:value="${currentPin}" />
+        <input type="hidden" name="accountNumber" th:value="${accountNumber}" />
+
+        <!-- New PIN -->
+        <label>New PIN</label>
+        <input type="password"
+               id="newPin"
+               name="newPin"
+               class="pin-box"
+               maxlength="4"
+               inputmode="numeric"
+               required />
+        <div id="newPinError" class="error"></div>
+
+        <div class="checkbox-row">
+            <input type="checkbox" id="showPin" onclick="togglePin('newPin')">
+            <label for="showPin">Show PIN</label>
+        </div>
+
+        <!-- Confirm PIN -->
+        <label>Confirm New PIN</label>
+        <input type="password"
+               id="confirmPin"
+               name="confirmPin"
+               class="pin-box"
+               maxlength="4"
+               inputmode="numeric"
+               required />
+        <div id="confirmPinError" class="error"></div>
+
+        <div class="checkbox-row">
+            <input type="checkbox" id="showPin2" onclick="togglePin('confirmPin')">
+            <label for="showPin2">Show PIN</label>
+        </div>
+
+        <button class="btn" type="submit">Send OTP & Continue</button>
+    </form>
+</div>
+
+
+<script>
+
+    /* Allow only numbers */
+    function numericOnly(id) {
+        document.getElementById(id).addEventListener("input", function(){
+            this.value = this.value.replace(/[^0-9]/g, "");
+            liveValidate();
+        });
+    }
+
+    numericOnly("newPin");
+    numericOnly("confirmPin");
+
+    /* Show/Hide PIN */
+    function togglePin(id) {
+        let f = document.getElementById(id);
+        f.type = f.type === "password" ? "text" : "password";
+    }
+
+    /* LIVE VALIDATION - RED TEXT WHILE TYPING */
+    function liveValidate() {
+        let newPin = document.getElementById("newPin").value;
+        let confirmPin = document.getElementById("confirmPin").value;
+        let currentPin = document.getElementById("currentPinHidden").value;
+
+        let newErr = "";
+        let confirmErr = "";
+
+        if (newPin.length > 0 && !/^\d{4}$/.test(newPin)) {
+            newErr = "PIN must be exactly 4 digits.";
+        }
+
+        if (newPin === currentPin && newPin.length === 4) {
+            newErr = "New PIN cannot be same as current PIN.";
+        }
+
+        if (confirmPin.length === 4 && confirmPin !== newPin) {
+            confirmErr = "Both PINs must match.";
+        }
+
+        document.getElementById("newPinError").innerText = newErr;
+        document.getElementById("confirmPinError").innerText = confirmErr;
+
+        return (newErr === "" && confirmErr === "");
+    }
+
+    /* Final validation before submit */
+    function validateBeforeSubmit() {
+        return liveValidate();
+    }
+
+</script>
+
+</body>
+</html>

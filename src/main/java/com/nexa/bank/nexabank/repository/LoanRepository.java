@@ -14,6 +14,8 @@ public interface LoanRepository extends JpaRepository<Loan, Long> {
 
     List<Loan> findByStatusAndClosedFalse(LoanStatus status);
     List<Loan> findByAccountNumberOrderByCreatedAtDesc(String accountNumber);
+    Loan findTopByAccountNumberAndStatusOrderByIdDesc(
+            String accountNumber, LoanStatus status);
 
     // NEW – for admin listing, newest first
     List<Loan> findAllByOrderByCreatedAtDesc();

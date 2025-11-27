@@ -3,371 +3,418 @@
 <head>
     <meta charset="UTF-8">
     <title>Dashboard - Nexa Bank</title>
+
     <style>
-        /* 🌈 Basic Page Setup */
         body {
             margin: 0;
             font-family: 'Segoe UI', sans-serif;
-            background-color: #f5f7fb;
+            background: #f5f7fb;
             color: #0d1b3d;
-            transition: background 0.3s ease;
         }
 
-        /* 🌟 Navbar */
+        /* 🔵 Smaller Premium Navbar */
         .navbar {
-            background-color: #0d1b3d;
-            color: #f7d65b;
-            padding: 15px 40px;
+            background: #062045;
+            padding: 10px 35px;   /* Reduced height */
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
         }
 
         .navbar h1 {
             margin: 0;
-            font-size: 24px;
+            font-size: 22px;
+            font-weight: 700;
+            color: #ffcc33;
         }
 
         .nav-links a {
             color: white;
-            text-decoration: none;
             margin-left: 20px;
+            text-decoration: none;
             font-weight: 600;
-            transition: color 0.3s ease;
+            transition: 0.3s;
         }
 
-        .nav-links a:hover {
-            color: #f7d65b;
+        .logout-btn {
+            background: #ffcc33;
+            padding: 7px 20px;
+            border-radius: 6px;
+            color: black !important; /* 🔥 Black text */
+            border: none;
+            cursor: pointer;
+            font-weight: 700;
         }
 
-        /* 🧾 Top Summary Section */
+        /* 🔵 Premium Card Border */
+        .accent-card {
+            border-left: 8px solid #002b6b;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            padding: 30px;
+            transition: 0.25s;
+        }
+
+        .accent-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 28px rgba(0,0,0,0.18);
+        }
+
+        /* TOP SUMMARY BOX */
         .top-summary {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: white;
-            margin: 30px auto;
-            padding: 30px 40px;
+            margin: 25px auto;
             width: 85%;
-            border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
         }
 
-        /* 👆 Hover Effect on top-summary box */
-        .top-summary:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(13, 27, 61, 0.25);
+        .top-inner {
+            flex: 1;
         }
 
         .welcome-text {
             font-size: 26px;
-            font-weight: 600;
-            color: #1d3a73;
-            margin-bottom: 10px;
+            font-weight: 700;
         }
+/* SUMMARY SINGLE CARD WRAPPER */
+.summary-wrapper {
+    width: 85%;
+    margin: 25px auto;
+}
 
-        .balance-box {
-            font-size: 18px;
-            font-weight: 500;
-        }
+.summary-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 35px 40px;
+}
+
+/* Left side */
+.summary-left {
+    flex: 1;
+}
+
+.small-label {
+    font-size: 16px;
+    color: #334b77;
+    margin-bottom: 8px;
+}
+
+.balance-amount {
+    font-size: 42px;
+    font-weight: 700;
+    margin-top: 5px;
+    color: #062045;
+}
+
+/* Right side */
+.summary-right {
+    text-align: right;
+    min-width: 260px;
+}
+
+.account-age-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: #062045;
+}
+
+/* Mobile responsive */
+@media (max-width: 700px) {
+    .summary-card {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .summary-right {
+        text-align: center;
+        margin-top: 20px;
+    }
+}
 
         .balance-amount {
-            font-size: 40px;
-            font-weight: bold;
-            color: #0d1b3d;
-            margin-top: 5px;
+            font-size: 42px;
+            font-weight: 700;
+            margin-top: 10px;
+            color: #062045;
         }
 
         .account-age {
             text-align: right;
-            font-size: 18px;
-        }
-
-        .account-age .value {
-            color: #1d3a73;
             font-weight: 600;
-            font-size: 20px;
         }
 
-        /* 🧩 Action Cards */
+        /* ACTION CARDS (Grid) */
         .cards-container {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 30px;
             width: 85%;
-            margin: 0 auto 80px auto;
+            margin: auto;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
         }
 
-        .card {
-            background: white;
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-            cursor: pointer;
-            display:flex;
-            flex-direction:column;
-            justify-content:space-between;
-        }
-
-        /* ✨ Hover Lift Effect for Cards */
-        .card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 12px 25px rgba(13, 27, 61, 0.25);
-        }
-
-        .card h3 {
-            color: #1d3a73;
+        .card-icon {
+            font-size: 42px;
             margin-bottom: 10px;
         }
 
-        .card p {
-            margin-bottom: 15px;
-            color: #334b77;
-            flex:1;
-        }
-
-        /* 🟡 Button Styling (works for <a> and <button>) */
         .btn {
-            display:inline-block;
-            text-align:center;
-            background-color: #f7d65b;
-            color: #0d1b3d;
+            margin-top: 15px;
             padding: 10px 18px;
+            background: #ffcc33;
             border: none;
             border-radius: 8px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration:none;
+            text-decoration: none;
+            color: black;
         }
 
         .btn:hover {
-            background-color: #ffd700;
-            transform: scale(1.05);
+            background: #ffd95e;
         }
 
-        /* ⚓ Footer */
+        /* FOOTER */
         footer {
             text-align: center;
-            background-color: #0d1b3d;
-            color: #ccc;
-            padding: 15px;
-
-            bottom: 0;
-            width: 100%;
-            font-size: 14px;
+            margin-top: 50px;
+            padding: 20px;
+            background: #062045;
+            color: #bbb;
         }
-/* 🔥 Prevent horizontal scrolling everywhere */
-html, body {
-    width: 100%;
-    overflow-x: hidden !important;
-}
 
-/* Extra protection */
-.cards-container {
-    max-width: 100%;
-    overflow-x: hidden;
-}
-
-.card {
-    box-sizing: border-box;
-}
-
-        /* Responsive Fix */
         @media (max-width: 900px) {
-            .cards-container {
-                grid-template-columns: repeat(2, 1fr);
-            }
+            .cards-container { grid-template-columns: repeat(2, 1fr); }
         }
 
         @media (max-width: 600px) {
-            .cards-container {
-                grid-template-columns: 1fr;
-            }
-
-            .top-summary {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            .account-age {
-                text-align: center;
-                margin-top: 15px;
-            }
-            /* 🌟 Logout button styled like gold button */
-.logout-btn {
-            background: #f5c542;
-            color: #0d1b3d;
-            padding: 10px 20px;
-            font-weight: 600;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .logout-btn:hover {
-            background: #d9ad39;
-        }
+            .cards-container { grid-template-columns: 1fr; }
+            .top-summary { flex-direction: column; text-align: center; }
+            .account-age { text-align: center; margin-top: 15px; }
         }
     </style>
 </head>
+
 <body>
 
-<!-- Navbar -->
+<!-- NAVBAR -->
 <div class="navbar">
     <h1>NEXA BANK</h1>
 
     <div class="nav-links">
+        <a href="#" id="policies-link">NEXA Bank Policies</a>
         <a href="/logout" class="logout-btn">Logout</a>
     </div>
 </div>
 
-<!-- Top Summary -->
-<div class="top-summary">
-    <!-- Left: Welcome + Balance -->
-    <div>
-        <div class="welcome-text">Welcome back, <span th:text="${holderName}">Customer</span> 👋</div>
-        <div class="balance-box">
-            <p>Current Balance</p>
-            <div class="balance-amount">₹<span th:text="${balance}">0.00</span></div>
-        </div>
-    </div>
+<!-- TOP SUMMARY BOX -->
+<!-- 🔵 TOP SUMMARY — SINGLE PREMIUM CARD -->
+<div class="summary-wrapper">
+    <div class="accent-card summary-card">
 
-    <!-- Right: Account Age -->
-    <div class="account-age">
-        <p>Account Age</p>
-        <div class="value" th:text="${accountAge}">0 years 0 months 0 days</div>
+        <div class="summary-left">
+            <div class="welcome-text">
+                Welcome back, <span th:text="${holderName}">Customer</span> 👋
+            </div>
+
+            <p class="small-label">Current Balance</p>
+            <div class="balance-amount">
+                ₹<span th:text="${balance}">0.00</span>
+            </div>
+        </div>
+
+        <div class="summary-right">
+            <p class="small-label">Account Age</p>
+            <div class="account-age-value" th:text="${accountAge}">
+                0 years 0 months 0 days
+            </div>
+        </div>
+
     </div>
 </div>
 
-<!-- Action Cards -->
+<!-- ACTION CARDS -->
 <div class="cards-container">
-    <div class="card" role="region" aria-label="View Account Details">
+
+    <div class="accent-card">
+        <div class="card-icon">📘</div>
         <h3>View Account Details</h3>
-        <p>View detailed account information.</p>
-        <!-- CORRECT: Send accountNumber param to /account-details -->
-        <a th:href="@{'/account-details'(accountNumber=${accNumber})}" class="btn" aria-label="Open account details">Open</a>
+        <p>Complete breakdown of your account.</p>
+        <a th:href="@{'/account-details'(accountNumber=${accNumber})}" class="btn">Open</a>
     </div>
 
-    <div class="card">
+    <div class="accent-card">
+        <div class="card-icon">📊</div>
         <h3>Recent Balance History</h3>
-        <p>View your balance changes for the last 10 days.</p>
-        <!-- This is already the dashboard; keep as button or wire to a real endpoint if you have one -->
+        <p>Track your last 10 days' activity.</p>
         <a th:href="@{'/balance-history'(accountNumber=${accNumber})}" class="btn">View</a>
-
     </div>
 
-    <div class="card">
+    <div class="accent-card">
+        <div class="card-icon">💸</div>
         <h3>Transfer Money</h3>
-        <p>Send money to contacts or beneficiaries.</p>
-
+        <p>Send money instantly using IMPS, NEFT, UPI.</p>
         <a th:href="@{'/transfer'(accountNumber=${accNumber})}" class="btn">Transfer ₹</a>
     </div>
 
-    <div class="card">
+    <div class="accent-card">
+        <div class="card-icon">🏧</div>
         <h3>Withdraw</h3>
-        <p>Move funds to another account.</p>
+        <p>Withdraw funds securely anytime.</p>
         <a th:href="@{'/withdraw'(accountNumber=${accNumber})}" class="btn">Withdraw ₹</a>
-
     </div>
 
-    <div class="card">
+    <!-- NEXT ROW -->
+
+    <div class="accent-card">
+        <div class="card-icon">💰</div>
         <h3>Deposit</h3>
-        <p>Add money via UPI, NEFT, or IMPS.</p>
-        <a th:href="@{'/deposit'(accountNumber=${accNumber})}" class="btn">
-            Deposit ₹
-        </a>
-
-
+        <p>Add money using UPI, NEFT, IMPS.</p>
+        <a th:href="@{'/deposit'(accountNumber=${accNumber})}" class="btn">Deposit ₹</a>
     </div>
 
-    <div class="card">
+    <div class="accent-card">
+        <div class="card-icon">📄</div>
         <h3>Statements</h3>
-        <p>Download your monthly e-statements.</p>
-        <!-- CORRECT: Link includes accountNumber -->
-        <a th:href="@{'/statements'(accountNumber=${accNumber})}" class="btn" aria-label="Open statements">Open</a>
+        <p>Download your monthly statements.</p>
+        <a th:href="@{'/statements'(accountNumber=${accNumber})}" class="btn">Open</a>
     </div>
-    <div class="card">
+
+    <div class="accent-card">
+        <div class="card-icon">🎯</div>
         <h3>Daily Spending Limit</h3>
-        <p>Set your maximum limit for withdrawal & transfer per day.</p>
-
-        <a th:href="@{'/daily-limit'(accountNumber=${accNumber})}" class="btn">
-            Manage Limit
-        </a>
+        <p>Set maximum daily transaction limits.</p>
+        <a th:href="@{'/daily-limit'(accountNumber=${accNumber})}" class="btn">Manage</a>
     </div>
-    <div class="card">
+
+    <div class="accent-card">
+        <div class="card-icon">🔐</div>
         <h3>Freeze / Unfreeze Card</h3>
-        <p>Instantly lock or unlock your debit card for security.</p>
-
-        <a th:href="@{'/card-security'(accountNumber=${accNumber})}" class="btn">
-            Manage Card Lock
-        </a>
+        <p>Instantly lock or unlock your card.</p>
+        <a th:href="@{'/card-security'(accountNumber=${accNumber})}" class="btn">Manage</a>
     </div>
 
-    <div class="card">
+    <!-- NEXT ROW -->
+
+    <div class="accent-card">
+        <div class="card-icon">💳</div>
         <h3>Virtual Debit Card</h3>
-        <p>View your digital card details securely anytime.</p>
-
-        <a th:href="@{'/virtual-card'(accountNumber=${accNumber})}" class="btn">
-            View Card
-        </a>
+        <p>View your digital card securely.</p>
+        <a th:href="@{'/virtual-card'(accountNumber=${accNumber})}" class="btn">View</a>
     </div>
 
-    <div class="card">
+    <div class="accent-card">
+        <div class="card-icon">🏦</div>
         <h3>Apply Loan</h3>
-        <p>Quickly apply for personal, education, or home loans.</p>
-
-        <a th:href="@{'/loan/selection'(accountNumber=${accNumber})}" class="btn">
-            Apply Now
-        </a>
+        <p>Apply for personal, home, or education loans.</p>
+        <a th:href="@{'/loan/selection'(accountNumber=${accNumber})}" class="btn">Apply</a>
     </div>
-    <div class="card">
+
+    <div class="accent-card">
+        <div class="card-icon">📚</div>
         <h3>Loan History</h3>
-        <p>View your past loan applications, status, and remarks.</p>
-        <a th:href="@{'/loan/history'(accountNumber=${accNumber})}" class="btn">
-            Loan History
-        </a>
-
+        <p>View loan status and history.</p>
+        <a th:href="@{'/loan/history'(accountNumber=${accNumber})}" class="btn">View</a>
     </div>
 
-    <div class="card">
+    <div class="accent-card">
+        <div class="card-icon">📣</div>
         <h3>Raise Complaint</h3>
-        <p>Submit any issues or concerns regarding your account or transactions.</p>
-
-        <a th:href="@{'/raise-complaint'(accountNumber=${accNumber})}" class="btn">
-            Raise Complaint
-        </a>
+        <p>Submit issues or concerns.</p>
+        <a th:href="@{'/raise-complaint'(accountNumber=${accNumber})}" class="btn">Raise</a>
     </div>
-    <div class="card">
+
+    <!-- LAST ROW -->
+
+    <div class="accent-card">
+        <div class="card-icon">🗂️</div>
         <h3>Complaint History</h3>
-        <p>View your previous complaints and replies.</p>
-
-        <a th:href="@{'/complaint-history'(accountNumber=${accNumber})}" class="btn">
-            View History
-        </a>
+        <p>View previous complaints and replies.</p>
+        <a th:href="@{'/complaint-history'(accountNumber=${accNumber})}" class="btn">History</a>
     </div>
 
-    <div class="card">
+    <div class="accent-card">
+        <div class="card-icon">⭐</div>
         <h3>Credit Score</h3>
-        <p>Check your personalized financial score.</p>
+        <p>Check your financial credit score.</p>
         <a th:href="@{'/credit-score'(accountNumber=${accNumber})}" class="btn">View Score</a>
     </div>
-    <div class="card">
+
+    <div class="accent-card">
+        <div class="card-icon">📈</div>
         <h3>Expense Analyzer</h3>
-        <p>Track your monthly spending with charts.</p>
+        <p>Analyze monthly spending with charts.</p>
         <a th:href="@{'/expense-analysis'(accountNumber=${accNumber})}" class="btn">Analyze</a>
     </div>
 
-
+    <div class="accent-card">
+        <div class="card-icon">🔑</div>
+        <h3>Change PIN</h3>
+        <p>Change your ATM/transaction PIN securely.</p>
+        <a th:href="@{/change-pin(accountNumber=${accNumber})}" class="btn">Change</a>
+    </div>
 </div>
 
 <footer>
     © 2025 Nexa Bank. All Rights Reserved.
 </footer>
+<!-- POLICIES MODAL -->
+<div id="policies-modal" class="modal" style="
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.45);
+    display: flex; justify-content: center; align-items: center;
+    visibility: hidden; opacity: 0;
+    transition: 0.2s;">
+    <div class="modal-content" style="
+        width: 90%; max-width: 800px;
+        background: white; border-radius: 12px;
+        padding: 20px; box-shadow: 0 5px 25px rgba(0,0,0,0.25);
+        max-height: 85vh; overflow-y: auto;">
+
+        <h2 style="margin-top:0; color:#062045;">NEXA Bank Policies</h2>
+        <p style="color:#324c7e;">Important bank guidelines and policies</p>
+
+        <hr>
+
+        <h3>Account Usage Policy</h3>
+        <p>Customers must maintain minimum balances as applicable. Accounts should not be used for money laundering or suspicious activity.</p>
+
+        <h3>Data Privacy Policy</h3>
+        <p>Your data is safely encrypted. We protect customer information and never share it without consent.</p>
+
+        <div style="text-align:right; margin-top:20px;">
+            <button id="policies-close" class="btn">Close</button>
+        </div>
+    </div>
+</div>
+<script>
+    const modal = document.getElementById("policies-modal");
+    const openBtn = document.getElementById("policies-link");
+    const closeBtn = document.getElementById("policies-close");
+
+    // OPEN MODAL
+    openBtn.addEventListener("click", function(e){
+        e.preventDefault();
+        modal.style.visibility = "visible";
+        modal.style.opacity = "1";
+    });
+
+    // CLOSE MODAL
+    closeBtn.addEventListener("click", function(){
+        modal.style.opacity = "0";
+        modal.style.visibility = "hidden";
+    });
+
+    // CLOSE WHEN CLICK OUTSIDE
+    modal.addEventListener("click", function(e){
+        if(e.target === modal){
+            modal.style.opacity = "0";
+            modal.style.visibility = "hidden";
+        }
+    });
+</script>
 
 </body>
 </html>

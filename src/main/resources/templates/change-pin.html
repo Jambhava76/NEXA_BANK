@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <title>Verify Current PIN — Nexa Bank</title>
+
+    <style>
+        .navbar {
+            background: #0d1b3d;
+            color: #f5c542;
+            padding: 18px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 0 20px rgba(0,0,0,0.25);
+        }
+
+        .back-btn {
+            background:#f5c542;
+            color:#0d1b3d;
+            padding:10px 20px;
+            border-radius:8px;
+            text-decoration:none;
+            font-weight:700;
+        }
+
+        body {
+            font-family:'Segoe UI',sans-serif;
+            background:#f5f7fb;
+            margin:0;
+            padding-bottom:40px;
+        }
+
+        .card {
+            width:min(750px,90%);
+            margin:60px auto;
+            background:white;
+            border-radius:18px;
+            padding:40px;
+            box-shadow:0 25px 50px rgba(0,0,0,0.1);
+        }
+
+        h2 { color:#0d1b3d; }
+        p { color:#334b77; }
+
+        /* PIN Input */
+        .pin-box {
+            width:140px;
+            padding:12px;
+            border-radius:8px;
+            border:1px solid #d6e0fa;
+            font-size:22px;
+            text-align:center;
+            letter-spacing:3px;
+            margin-top:6px;
+        }
+
+        .pin-box:focus {
+            outline:none;
+            border-color:#0d1b3d;
+        }
+
+        .btn {
+            background:#f7d65b;
+            color:#0d1b3d;
+            padding:12px 24px;
+            border-radius:8px;
+            font-weight:700;
+            border:none;
+            cursor:pointer;
+            margin-top:20px;
+            font-size:16px;
+        }
+
+        .checkbox-row {
+            margin-top:12px;
+            display:flex;
+            align-items:center;
+            gap:8px;
+            color:#0d1b3d;
+        }
+
+        .error {
+            color:#b00020;
+            margin-top:15px;
+            font-weight:600;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="navbar">
+    <h1>NEXA BANK</h1>
+    <a th:href="@{'/dashboard'(accountNumber=${accountNumber})}" class="back-btn">← Back to Dashboard</a>
+</div>
+
+<div class="card">
+    <h2>Verify Current PIN</h2>
+    <p>To change your PIN, first verify your existing 4-digit PIN.</p>
+
+    <form th:action="@{/change-pin/verify-current}" method="post" onsubmit="return validatePin()">
+
+        <input type="hidden" name="accountNumber" th:value="${accountNumber}"/>
+
+        <label>Enter Current PIN</label><br>
+
+        <input type="password"
+               id="currentPin"
+               name="currentPin"
+               class="pin-box"
+               maxlength="4"
+               pattern="\d{4}"
+               inputmode="numeric"
+               required />
+
+        <div class="checkbox-row">
+            <input type="checkbox" id="showPin" onclick="togglePin()">
+            <label for="showPin">Show PIN</label>
+        </div>
+
+        <div th:if="${error}" class="error" th:text="${error}"></div>
+
+        <button class="btn" type="submit">Verify</button>
+    </form>
+</div>
+
+
+<script>
+    function togglePin() {
+        const pin = document.getElementById("currentPin");
+        pin.type = pin.type === "password" ? "text" : "password";
+    }
+
+    // Allow only numbers
+    document.getElementById("currentPin").addEventListener("input", function () {
+        this.value = this.value.replace(/[^0-9]/g, "");
+    });
+
+    // Validate exactly 4 digits
+    function validatePin() {
+        const pinValue = document.getElementById("currentPin").value;
+        if (!/^\d{4}$/.test(pinValue)) {
+            alert("PIN must be exactly 4 digits.");
+            return false;
+        }
+        return true;
+    }
+</script>
+
+</body>
+</html>

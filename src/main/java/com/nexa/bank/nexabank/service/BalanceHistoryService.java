@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
-
 @Service
 public class BalanceHistoryService {
 
@@ -20,52 +19,28 @@ public class BalanceHistoryService {
     public List<Map<String, Object>> getLast10DaysHistory(String accountNumber, BigDecimal currentBalance) {
 
         List<Transaction> txList = txRepo.getAllTransactionsForAccount(accountNumber);
-        txList.sort(Comparator.comparing(Transaction::getCreatedAt).reversed()); // newest first
+
+        // Sort by date ASC (oldest → newest)
+        txList.sort(Comparator.comparing(Transaction::getCreatedAt));
 
         List<Map<String, Object>> history = new ArrayList<>();
-
-        BigDecimal runningBalance = currentBalance;
 
         for (int i = 0; i < 10; i++) {
 
             LocalDate day = LocalDate.now().minusDays(i);
 
-            BigDecimal closingBalance = runningBalance; // today’s closing balance
+            // Find latest transaction BEFORE or ON this day
+            BigDecimal closingBalance = null;
 
             for (Transaction tx : txList) {
-
-                if (tx.getCreatedAt().toLocalDate().isEqual(day)) {
-
-                    BigDecimal amt = tx.getAmount();
-
-                    switch (tx.getType()) {
-
-                        case "DEPOSIT":
-                            // to go backwards in time, reverse deposit
-                            runningBalance = runningBalance.subtract(amt);
-                            break;
-
-                        case "WITHDRAW":
-                            // reverse withdraw
-                            runningBalance = runningBalance.add(amt);
-                            break;
-
-                        case "TRANSFER":
-                            if (accountNumber.equals(tx.getSenderAccountNumber())) {
-                                // sender → reverse: add back the money
-                                runningBalance = runningBalance.add(amt);
-                            }
-                            if (accountNumber.equals(tx.getReceiverAccountNumber())) {
-                                // receiver → reverse: subtract the money
-                                runningBalance = runningBalance.subtract(amt);
-                            }
-                            break;
-                    }
+                LocalDate txDate = tx.getCreatedAt().toLocalDate();
+                if (!txDate.isAfter(day)) { // txDate <= day
+                    closingBalance = tx.getBalanceAfter();
                 }
             }
 
-            // Never allow negative due to rounding or mistakes – realistic minimum = 0
-            if (closingBalance.compareTo(BigDecimal.ZERO) < 0) {
+            // If still null → no previous transaction → balance = 0
+            if (closingBalance == null) {
                 closingBalance = BigDecimal.ZERO;
             }
 
@@ -78,5 +53,6 @@ public class BalanceHistoryService {
 
         return history;
     }
+
 
 }

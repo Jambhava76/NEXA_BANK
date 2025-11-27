@@ -286,4 +286,10 @@ public class LoanService {
             throw new RuntimeException("EMI deduction failed: " + ex.getMessage());
         }
     }
+    public Loan getActiveLoan(String accountNumber) {
+        return loanRepo.findTopByAccountNumberAndStatusOrderByIdDesc(
+                accountNumber, LoanStatus.DISBURSED
+        );
+    }
+
 }

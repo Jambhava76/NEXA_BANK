@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <title>PIN Changed — Nexa Bank</title>
+
+    <style>
+        body{
+            font-family:'Segoe UI',sans-serif;
+            background:#f0f4ff;
+            margin:0;
+        }
+
+        /* NAVBAR */
+        .navbar {
+            background:#0d1b3d;
+            color:#f7d65b;
+            padding:18px 40px;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            box-shadow:0 0 20px rgba(0,0,0,0.25);
+        }
+
+        .dashboard-btn {
+            background:#f7d65b;
+            color:#0d1b3d;
+            padding:10px 18px;
+            border-radius:8px;
+            text-decoration:none;
+            font-weight:700;
+            box-shadow:0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .dashboard-btn:hover{
+            background:#ffe680;
+        }
+
+        /* SUCCESS CARD */
+        .card{
+            width:min(700px,90%);
+            margin:90px auto;
+            background:white;
+            border-radius:20px;
+            padding:40px;
+            text-align:left;
+            border-left:10px solid #f7d65b;
+            box-shadow:0 20px 50px rgba(13,27,61,0.18);
+        }
+
+        h2 {
+            font-size:30px;
+            color:#0d1b3d;
+            margin-bottom:10px;
+        }
+
+        p{
+            font-size:18px;
+            color:#333;
+        }
+
+        .btn {
+            background:#f7d65b;
+            color:#0d1b3d;
+            padding:12px 16px;
+            border-radius:8px;
+            border:none;
+            cursor:pointer;
+            margin-top:25px;
+            text-decoration:none;
+            display:inline-block;
+            font-weight:600;
+            box-shadow:0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .btn:hover { background:#ffe680; }
+    </style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<div class="navbar">
+    <h1>NEXA BANK</h1>
+    <a th:href="@{/dashboard(accountNumber=${accountNumber})}" class="dashboard-btn">← Back to Dashboard</a>
+</div>
+
+<!-- MAIN SUCCESS MESSAGE -->
+<div class="card">
+    <h2>PIN Changed Successfully</h2>
+
+    <!-- Dynamic Message -->
+    <p th:text="'Hi ' + ${holderName} + ', your PIN for account ' + ${accountNumber} + ' has been updated successfully.'"></p>
+
+    <a th:href="@{/dashboard(accountNumber=${accountNumber})}" class="btn">Back to Dashboard</a>
+</div>
+
+</body>
+</html>

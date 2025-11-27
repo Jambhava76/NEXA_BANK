@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Verify OTP — Nexa Bank</title>
+
+    <style>
+        body{
+            background: linear-gradient(to right,#0d1b3d,#1d3a73);
+            height:100vh;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            font-family: Segoe UI, sans-serif;
+            color:#fff;
+            margin:0;
+        }
+        .box{
+            background:#fff;
+            color:#0d1b3d;
+            width:420px;
+            padding:35px 30px;
+            border-radius:15px;
+            text-align:center;
+            box-shadow:0px 0px 30px rgba(255,255,255,0.25);
+        }
+        input{
+            width:100%;
+            padding:12px;
+            font-size:18px;
+            border:1px solid #bbb;
+            border-radius:8px;
+            margin-top:12px;
+            text-align:center;
+        }
+        button{
+            width:100%;
+            padding:14px;
+            margin-top:22px;
+            background:#f5c542;
+            border:0;
+            border-radius:8px;
+            font-size:18px;
+            font-weight:600;
+            cursor:pointer;
+        }
+        button:hover{
+            background:#e1b336;
+        }
+        .error{
+            color:red;
+            font-weight:600;
+            margin-top:10px;
+        }
+        .resend-btn{
+            margin-top:10px;
+            background:#1f3c66;
+            color:white;
+            border-radius:8px;
+            padding:12px;
+            border:none;
+            cursor:pointer;
+        }
+        .timer {
+            margin-top:15px;
+            font-size:16px;
+            color:red;
+            font-weight:600;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="box">
+    <h2>Enter OTP sent to your Email</h2>
+
+    <form th:action="@{/change-pin/verify-otp}" method="post">
+
+        <!-- REQUIRED HIDDEN FIELDS -->
+        <input type="hidden" name="email" th:value="${email}">
+        <input type="hidden" name="accountNumber" th:value="${accountNumber}">
+        <input type="hidden" name="newPin" th:value="${newPin}">
+
+        <input type="text" name="otp" placeholder="Enter OTP" maxlength="6" required>
+
+        <button type="submit">Verify OTP</button>
+    </form>
+
+    <div th:if="${error}" class="error" th:text="${error}"></div>
+
+    <!-- TIMER -->
+    <p class="timer" id="timer">OTP expires in 02:00</p>
+
+    <!-- RESEND OTP -->
+    <form th:action="@{/change-pin/send-otp}" method="post">
+        <input type="hidden" name="accountNumber" th:value="${accountNumber}">
+        <input type="hidden" name="newPin" th:value="${newPin}">
+        <input type="hidden" name="email" th:value="${email}">
+        <button class="resend-btn" id="resendBtn" disabled>Resend OTP</button>
+    </form>
+
+    <p th:if="${resendMsg}" style="color:lightgreen; margin-top:10px;">
+        <span th:text="${resendMsg}"></span>
+    </p>
+
+    <!-- Success message -->
+    <p th:if="${resent}" style="color:green;font-weight:600;margin-top:10px;">
+        New OTP has been sent to your email.
+    </p>
+
+</div>
+
+<script>
+    let timeLeft = 120; // seconds
+    const timer = document.getElementById("timer");
+    const resendBtn = document.getElementById("resendBtn");
+
+    const countdown = setInterval(() => {
+        let minutes = Math.floor(timeLeft / 60);
+        let seconds = timeLeft % 60;
+
+        seconds = seconds < 10 ? "0" + seconds : seconds;
+        timer.innerText = `OTP expires in ${minutes}:${seconds}`;
+
+        if (timeLeft <= 0) {
+            clearInterval(countdown);
+            timer.innerText = "OTP expired! Please resend.";
+            resendBtn.disabled = false;
+            resendBtn.style.opacity = "1";
+            resendBtn.style.cursor = "pointer";
+        }
+
+        timeLeft--;
+    }, 1000);
+</script>
+
+</body>
+</html>
