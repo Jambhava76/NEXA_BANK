@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Nexa Bank – Reset PIN</title>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #062045, #0a3781);
+            font-family: "Segoe UI", sans-serif;
+            color: white;
+        }
+
+        .pin-box {
+            width: 480px;
+            background: rgba(255,255,255,0.12);
+            backdrop-filter: blur(14px);
+            border-radius: 22px;
+            padding: 40px 40px;
+            text-align: center;
+            color: #fff;
+            border: 2px solid rgba(255,255,255,0.18);
+            box-shadow: 0 0 40px rgba(0,0,0,0.35);
+        }
+
+        h2 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        /* ROW WITH BOXES + EYE */
+        .pin-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            margin: 12px 0 25px 0;
+        }
+
+        .pin-input {
+            width: 55px;
+            height: 58px;
+            font-size: 22px;
+            font-weight: bold;
+            text-align: center;
+            border-radius: 12px;
+            background: #fff;
+            color: #062045;
+            border: 2px solid #d1d9e6;
+            outline: none;
+            transition: .2s;
+        }
+
+        .pin-input:focus {
+            border-color: #f5c542;
+            box-shadow: 0 0 10px rgba(245,197,66,0.6);
+        }
+
+        /* Inline Eye Toggle */
+        .eye-inline {
+            cursor: pointer;
+            font-size: 22px;
+            margin-left: 5px;
+            color: #f5c542;
+            display: flex;
+            align-items: center;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            margin-top: 15px;
+            border-radius: 12px;
+            border: none;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.25s;
+        }
+
+        .btn-update {
+            background: #f7d65b;
+            color: #1a1a1a;
+        }
+        .btn-update:hover {
+            background: #ffdf4d;
+            transform: scale(1.02);
+        }
+
+        .btn-login {
+            background: #062045;
+            border: 1px solid #1b3566;
+            color: white;
+        }
+        .btn-login:hover {
+            background: #0a2a63;
+        }
+
+        .msg {
+            margin-top: 12px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        .error { color: #ff8b8b; }
+        .success { color: #7dff7d; }
+    </style>
+</head>
+
+<body>
+
+<div class="pin-box">
+
+    <h2>Create New PIN</h2>
+
+    <p th:if="${success}" class="msg success" th:text="${success}"></p>
+    <p th:if="${error}" class="msg error" th:text="${error}"></p>
+
+    <form th:action="@{/reset-pin}" method="post" id="pinForm">
+
+        <input type="hidden" name="accountNumber" th:value="${accountNumber}">
+        <input type="hidden" name="newPin" id="finalPin">
+
+        <!-- NEW PIN -->
+        <label>New PIN</label>
+        <div class="pin-row" id="newPinRow">
+            <input class="pin-input" maxlength="1">
+            <input class="pin-input" maxlength="1">
+            <input class="pin-input" maxlength="1">
+            <input class="pin-input" maxlength="1">
+            <span class="eye-inline" id="newPinEye">🙈</span>
+        </div>
+
+        <!-- CONFIRM PIN -->
+        <label>Confirm PIN</label>
+        <div class="pin-row" id="confirmPinRow">
+            <input class="pin-input" maxlength="1">
+            <input class="pin-input" maxlength="1">
+            <input class="pin-input" maxlength="1">
+            <input class="pin-input" maxlength="1">
+            <span class="eye-inline" id="confirmPinEye">🙈</span>
+        </div>
+
+        <p id="pinError" class="msg error"></p>
+
+        <button class="btn btn-update" type="submit">Update PIN</button>
+    </form>
+
+    <form th:if="${success}" th:action="@{/login}">
+        <button class="btn btn-login">Go to Login</button>
+    </form>
+
+</div>
+
+<script>
+    function setupPinSet(rowId, eyeId, callback) {
+        const boxes = document.querySelectorAll(`#${rowId} .pin-input`);
+        const eye = document.getElementById(eyeId);
+        let visible = false;
+
+        boxes.forEach((box, i) => {
+            box.type = "password";
+
+            box.addEventListener("input", () => {
+                box.value = box.value.replace(/[^0-9]/g, "");
+                if (box.value && i < 3) boxes[i+1].focus();
+
+                let pin = "";
+                boxes.forEach(b => pin += b.value);
+                callback(pin);
+            });
+
+            box.addEventListener("keydown", e => {
+                if (e.key === "Backspace" && !box.value && i > 0) {
+                    boxes[i-1].focus();
+                }
+            });
+        });
+
+        eye.addEventListener("click", () => {
+            visible = !visible;
+            eye.textContent = visible ? "👁️" : "🙈";
+            boxes.forEach(b => b.type = visible ? "text" : "password");
+        });
+    }
+
+    let newPin = "";
+    let confirmPin = "";
+
+    setupPinSet("newPinRow", "newPinEye", val => newPin = val);
+    setupPinSet("confirmPinRow", "confirmPinEye", val => confirmPin = val);
+
+    document.getElementById("pinForm").addEventListener("submit", e => {
+        const err = document.getElementById("pinError");
+        err.textContent = "";
+
+        if (newPin.length !== 4) {
+            err.textContent = "New PIN must be 4 digits.";
+            e.preventDefault();
+            return;
+        }
+        if (newPin !== confirmPin) {
+            err.textContent = "PINs do not match.";
+            e.preventDefault();
+            return;
+        }
+
+        document.getElementById("finalPin").value = newPin;
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Nexa Bank – Forgot PIN</title>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #062045, #0a3781);
+            font-family: "Segoe UI", sans-serif;
+        }
+
+        .card {
+            width: 430px;
+            padding: 35px;
+            background: rgba(255,255,255,0.10);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 0 40px rgba(0,0,0,0.35);
+            border: 2px solid rgba(255,255,255,0.18);
+            color: white;
+            text-align: center;
+            animation: fadeIn 0.8s ease;
+        }
+
+        .card h2 {
+            font-size: 26px;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .input-box {
+            width: 95%;
+            margin-top: 18px;
+            text-align: left;
+        }
+
+        .input-box label {
+            font-size: 15px;
+            font-weight: 600;
+            color: #f2f2f2;
+        }
+
+        .input-box input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid #c9c9c9;
+            outline: none;
+            font-size: 16px;
+            margin-top: 6px;
+            transition: 0.25s;
+        }
+
+        .input-box input:focus {
+            border-color: #f5c542;
+            box-shadow: 0 0 10px rgba(245,197,66,0.6);
+        }
+
+        .btn {
+            margin-top: 25px;
+            width: 100%;
+            padding: 12px;
+            background: #f7d65b;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            color: #1a1a1a;
+            transition: 0.3s;
+        }
+
+        .btn:hover {
+            background: #ffdf4d;
+            transform: scale(1.03);
+        }
+
+        .error {
+            margin-top: 15px;
+            font-size: 15px;
+            color: #ff8080;
+            font-weight: 600;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>Reset Your PIN</h2>
+
+    <form action="/forgot-pin-send-otp" method="post">
+        <div class="input-box">
+            <label>Enter Account Number</label>
+            <input type="text" name="accountNumber" maxlength="12" required>
+        </div>
+
+        <button type="submit" class="btn">Send OTP</button>
+    </form>
+
+    <p class="error" th:text="${error}"></p>
+</div>
+
+</body>
+</html>

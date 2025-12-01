@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Nexa Bank – OTP Verification</title>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #062045, #0a3781);
+            font-family: "Segoe UI", sans-serif;
+            color: white;
+        }
+
+        .otp-box {
+            width: 450px;
+            background: rgba(255,255,255,0.12);
+            border-radius: 22px;
+            padding: 40px 35px;
+            text-align: center;
+            box-shadow: 0 0 40px rgba(0,0,0,0.35);
+            backdrop-filter: blur(12px);
+            border: 2px solid rgba(255,255,255,0.18);
+            animation: fadeIn 0.7s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .email-info {
+            font-size: 15px;
+            color: #e0e6f5;
+            font-weight: 500;
+            margin-bottom: 18px;
+        }
+
+        /* OTP input boxes */
+        .otp-container {
+            display: flex;
+            justify-content: center;
+            gap: 14px;
+            margin-top: 25px;
+            margin-bottom: 20px;
+        }
+
+        .otp-input {
+            width: 48px;
+            height: 58px;
+            font-size: 22px;
+            font-weight: bold;
+            text-align: center;
+            border-radius: 12px;
+            border: 2px solid #d4d8e6;
+            background: white;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        .otp-input:focus {
+            border-color: #f5c542;
+            box-shadow: 0 0 10px rgba(245,197,66,0.7);
+        }
+
+        .shake {
+            animation: shakeAnim 0.3s ease;
+        }
+        @keyframes shakeAnim {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-6px); }
+            50% { transform: translateX(6px); }
+            75% { transform: translateX(-6px); }
+            100% { transform: translateX(0); }
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: 0.3s;
+        }
+
+        .btn-verify {
+            background: #f7d65b;
+            color: #1a1a1a;
+            margin-top: 10px;
+        }
+        .btn-verify:hover {
+            background: #ffdf4d;
+            transform: scale(1.03);
+        }
+
+        .btn-resend {
+            background: #062045;
+            color: #fff;
+            margin-top: 14px;
+            border: 1px solid #1b3566;
+        }
+        .btn-resend:hover {
+            background: #0a2a63;
+            transform: scale(1.02);
+        }
+
+        .timer {
+            margin-top: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            color: #ffadad;
+        }
+
+        .msg {
+            font-size: 15px;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .success-text {
+            font-weight: 700;
+            color: #8af58a;
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="otp-box">
+
+    <h2>Enter OTP</h2>
+    <p class="email-info">
+        OTP sent to <b th:text="${email}"></b>
+    </p>
+
+    <p th:if="${resendMessage}" class="success-text" th:text="${resendMessage}"></p>
+
+    <!-- FIXED: changed to /forgot-pin-verify -->
+    <form th:action="@{/forgot-pin-verify}" method="post" id="verifyForm">
+
+        <input type="hidden" name="email" th:value="${email}">
+        <input type="hidden" name="otp" id="finalOtp">
+
+        <div class="otp-container" id="otpBoxGroup">
+            <input class="otp-input" maxlength="1" inputmode="numeric">
+            <input class="otp-input" maxlength="1" inputmode="numeric">
+            <input class="otp-input" maxlength="1" inputmode="numeric">
+            <input class="otp-input" maxlength="1" inputmode="numeric">
+            <input class="otp-input" maxlength="1" inputmode="numeric">
+            <input class="otp-input" maxlength="1" inputmode="numeric">
+        </div>
+
+        <button type="submit" class="btn btn-verify">Verify OTP</button>
+
+        <p class="msg" th:if="${error}" th:text="${error}" style="color:#ff8080;"></p>
+
+        <p id="timer" class="timer">OTP expires in 02:00</p>
+    </form>
+
+    <!-- FIXED: changed to /forgot-pin-resend-otp -->
+    <form th:action="@{/forgot-pin-resend-otp(email=${email})}" method="post">
+        <button class="btn btn-resend">Resend OTP</button>
+    </form>
+
+</div>
+
+<script>
+    const boxes = document.querySelectorAll(".otp-input");
+    const finalOtp = document.getElementById("finalOtp");
+    const otpGroup = document.getElementById("otpBoxGroup");
+
+    boxes.forEach((box, index) => {
+        box.addEventListener("input", () => {
+            box.value = box.value.replace(/[^0-9]/g, "");
+
+            if (box.value && index < 5) {
+                boxes[index + 1].focus();
+            }
+
+            let otp = "";
+            boxes.forEach(b => otp += b.value);
+            finalOtp.value = otp;
+        });
+
+        box.addEventListener("keydown", (e) => {
+            if (e.key === "Backspace" && !box.value && index > 0) {
+                boxes[index - 1].focus();
+            }
+        });
+    });
+
+    const errorMsg = document.querySelector(".msg[style='color:#ff8080;']");
+    if (errorMsg) {
+        otpGroup.classList.add("shake");
+        setTimeout(() => otpGroup.classList.remove("shake"), 400);
+    }
+
+    let timeLeft = 120;
+    const timerEl = document.getElementById("timer");
+
+    const countdown = setInterval(() => {
+        let m = String(Math.floor(timeLeft / 60)).padStart(2, "0");
+        let s = String(timeLeft % 60).padStart(2, "0");
+
+        timerEl.textContent = `OTP expires in ${m}:${s}`;
+
+        if (timeLeft <= 0) {
+            clearInterval(countdown);
+            timerEl.textContent = "OTP expired. Please resend.";
+        }
+        timeLeft--;
+    }, 1000);
+</script>
+
+</body>
+</html>

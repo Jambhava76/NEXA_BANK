@@ -969,6 +969,150 @@ public class AccountController {
 
         return "verify-guardian-otp";
     }
+    @GetMapping("/forgot-pin")
+    public String forgotPinPage() {
+        return "forgot-pin";
+    }
+    @PostMapping("/forgot-pin-send-otp")
+    public String sendForgotPinOtp(@RequestParam String accountNumber,
+                                   RedirectAttributes ra,
+                                   Model model) {
+
+        Optional<Account> accOpt = accountRepository.findByAccountNumber(accountNumber);
+
+        if (accOpt.isEmpty()) {
+            model.addAttribute("error", "Account not found!");
+            return "forgot-pin";
+        }
+
+        Account acc = accOpt.get();
+
+        // Send OTP
+        otpService.generateAndSendOtp(acc.getEmail(), mailSender);
+
+        // Store temporarily (session map)
+        session.setAttribute("resetPinAccount", acc);
+
+        ra.addAttribute("email", acc.getEmail());
+        return "redirect:/forgot-pin-verify-otp";
+    }
+    @GetMapping("/forgot-pin-verify-otp")
+    public String showForgotPinOtp(@RequestParam String email, Model model) {
+        model.addAttribute("email", email);
+        return "forgot-pin-verify-otp";
+    }
+    @PostMapping("/forgot-pin-verify")
+    public String verifyForgotPinOtp(@RequestParam String email,
+                                     @RequestParam String otp,
+                                     Model model,
+                                     HttpSession session) {
+
+        if (!otpService.verifyOtp(email, otp)) {
+            model.addAttribute("error", "Invalid OTP");
+            model.addAttribute("email", email);
+            return "forgot-pin-verify-otp";
+        }
+
+        // Fetch account stored earlier
+        Account acc = (Account) session.getAttribute("resetPinAccount");
+
+        if (acc == null || !acc.getEmail().equals(email)) {
+            model.addAttribute("error", "Session expired. Try again.");
+            return "forgot-pin";
+        }
+
+        // Pass account number to reset page
+        session.setAttribute("resetPinAccNo", acc.getAccountNumber());
+
+        return "redirect:/reset-pin";
+    }
+
+    @GetMapping("/reset-pin")
+    public String resetPinPage(Model model, HttpSession session) {
+
+        String accNo = (String) session.getAttribute("resetPinAccNo");
+
+        if (accNo == null) {
+            model.addAttribute("error", "Session expired. Start again.");
+            return "forgot-pin";
+        }
+
+        model.addAttribute("accountNumber", accNo);
+        return "reset-pin";
+    }
+    @PostMapping("/reset-pin")
+    public String resetPin(@RequestParam String accountNumber,
+                           @RequestParam String newPin,
+                           Model model,
+                           HttpSession session) {
+
+        Optional<Account> accOpt = accountRepository.findByAccountNumber(accountNumber);
+
+        if (accOpt.isEmpty()) {
+            model.addAttribute("error", "Account not found.");
+            return "reset-pin";
+        }
+
+        Account acc = accOpt.get();
+
+        // Validate 4-digit format
+        if (!newPin.matches("\\d{4}")) {
+            model.addAttribute("error", "PIN must be exactly 4 digits.");
+            model.addAttribute("accountNumber", accountNumber);
+            return "reset-pin";
+        }
+
+        // Prevent old PIN = new PIN
+        String oldHashed = acc.getPin();
+        String newHashed = accountService.hashPin(newPin);
+
+        if (oldHashed.equals(newHashed)) {
+            model.addAttribute("error", "New PIN cannot be the same as your previous PIN.");
+            model.addAttribute("accountNumber", accountNumber);
+            return "reset-pin";
+        }
+
+        // Save new PIN
+        acc.setPin(newHashed);
+        accountRepository.save(acc);
+
+        // Clear session data
+        session.removeAttribute("resetPinAccount");
+        session.removeAttribute("resetPinAccNo");
+
+        // Email confirmation
+        emailService.sendEmail(
+                acc.getEmail(),
+                "Your Nexa Bank PIN has been changed",
+                "Hello " + acc.getHolderName() +
+                        ",\n\nYour PIN has been successfully changed.\nIf this was not you, contact support immediately.\n\n- Nexa Bank"
+        );
+
+        // SUCCESS message displayed on reset-pin page
+        model.addAttribute("success", "Your PIN was updated successfully!");
+        model.addAttribute("accountNumber", accountNumber);
+
+        return "reset-pin"; // STAYS on page → success UI + login button visible
+    }
+
+    @PostMapping("/forgot-pin-resend-otp")
+    public String resendForgotPinOtp(@RequestParam String email, RedirectAttributes ra) {
+
+        // Get account from session
+        Account acc = (Account) session.getAttribute("resetPinAccount");
+
+        if (acc == null || !acc.getEmail().equals(email)) {
+            ra.addFlashAttribute("error", "Session expired. Please try again.");
+            return "redirect:/forgot-pin";
+        }
+
+        // Send new OTP
+        otpService.generateAndSendOtp(email, mailSender);
+
+        ra.addFlashAttribute("resendMessage", "A new OTP has been sent to your email!");
+
+        return "redirect:/forgot-pin-verify-otp?email=" + email;
+    }
 
 
 }

@@ -175,7 +175,53 @@
             font-weight: 700;
             color: #062045;
             margin-bottom: 15px;
-        }
+        }/* PREMIUM STATS SECTION */
+.stats-section {
+    padding: 40px 8%;
+}
+
+.stats-container {
+    display: flex;
+    justify-content: center;
+    gap: 35px;
+    flex-wrap: wrap;
+}
+
+.stats-card {
+    width: 300px;
+    padding: 35px 25px;
+    border-radius: 20px;
+    background: linear-gradient(135deg, #ffffff, #e9f0ff);
+    text-align: center;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    transition: 0.3s ease;
+    border-bottom: 6px solid #062045;
+}
+
+.stats-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+    border-bottom-color: #ffcc33;
+}
+
+.stats-icon {
+    width: 65px;
+    margin-bottom: 10px;
+}
+
+.stats-card h1 {
+    font-size: 50px;
+    margin: 5px 0;
+    font-weight: 700;
+    color: #062045;
+}
+
+.stats-card p {
+    font-size: 18px;
+    color: #1d1d1d;
+    margin: 10px 0 0 0;
+}
+
         .modal-close {
             float: right;
             cursor: pointer;
@@ -280,6 +326,214 @@
 
     </div>
 </section>
+<!-- STATISTICS SECTION (PREMIUM) -->
+<h2 class="section-title">Our Achievements</h2>
+
+<section class="stats-section">
+    <div class="stats-container">
+
+        <div class="stats-card">
+            <img src="https://img.icons8.com/fluency/96/user-group-man-man.png" class="stats-icon">
+            <h1><span class="counter" data-target="50">0</span>+</h1>
+            <p>Active Accounts</p>
+        </div>
+
+        <div class="stats-card">
+            <img src="https://img.icons8.com/fluency/96/money-transfer.png" class="stats-icon">
+            <h1><span class="counter" data-target="100">0</span>+</h1>
+            <p>Verified Transactions</p>
+        </div>
+
+        <div class="stats-card">
+            <img src="https://img.icons8.com/fluency/96/request-money.png" class="stats-icon">
+            <h1><span class="counter" data-target="30">0</span>+</h1>
+            <p>Loan Applications</p>
+        </div>
+
+    </div>
+</section>
+
+<div style="display:flex; justify-content:center; margin:40px 0;">
+    <lottie-player
+            src="https://assets7.lottiefiles.com/packages/lf20_puciaact.json"
+            background="transparent"
+            speed="1"
+            style="width:300px; height:300px;"
+            loop autoplay>
+    </lottie-player>
+
+</div>
+<div class="rotate-box">
+    <span id="rotate-text">Smart. Secure. Seamless.</span>
+</div>
+
+<style>
+    .rotate-box {
+        text-align: center;
+        margin-top: 20px;
+        font-size: 28px;
+        font-weight: 700;
+        color: #062045;
+    }
+</style>
+
+<script>
+    const messages = [
+        "Smart. Secure. Seamless.",
+        "Experience banking with confidence.",
+        "Your money. Your future. Our responsibility.",
+        "Fast. Safe. Trusted by thousands."
+    ];
+
+    let index = 0;
+    setInterval(() => {
+        document.getElementById("rotate-text").textContent = messages[index];
+        index = (index + 1) % messages.length;
+    }, 2000);
+</script>
+<!-- ⭐ ADVANCED CALL-TO-ACTION SECTION -->
+<section class="cta-wrapper">
+
+    <style>
+        /* CTA SECTION WRAPPER */
+        .cta-wrapper {
+            display: flex;
+            justify-content: center;
+            padding: 80px 20px;
+        }
+
+        /* CTA CARD */
+        .cta-card {
+            position: relative;
+            width: 60%;
+            padding: 20px 40px;
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(12px);
+            border-radius: 28px;
+            border: 2px solid transparent;
+            background-clip: padding-box;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+            animation: floatCard 6s ease-in-out infinite;
+            text-align: center;
+        }
+
+        /* Animated Gradient Border */
+        .cta-card:before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            padding: 2px;
+            border-radius: 28px;
+            background: linear-gradient(135deg, #004aad, #0074f8, #00c8ff);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask-composite: exclude;
+            animation: gradientMove 6s linear infinite;
+        }
+
+        @keyframes gradientMove {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
+        }
+
+        @keyframes floatCard {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+
+        /* HEADING TEXT */
+        .cta-card h2 {
+            font-size: 42px;
+            font-weight: 800;
+            color: #062045;
+            margin-bottom: 15px;
+        }
+
+        /* SUBTEXT */
+        .cta-card p {
+            font-size: 20px;
+            color: #333;
+            margin-bottom: 35px;
+        }
+
+        /* BUTTON */
+        .cta-btn {
+            position: relative;
+            background: #ffcc33;
+            color: #000;
+            font-size: 22px;
+            font-weight: 700;
+            padding: 16px 45px;
+            border-radius: 12px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 8px 25px rgba(255,204,51,0.4);
+            overflow: hidden;
+            transition: 0.3s;
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(255,204,51,0.55);
+        }
+
+        /* SHINE EFFECT */
+        .cta-btn .shine {
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 120%;
+            height: 100%;
+            background: rgba(255,255,255,0.4);
+            transform: skewX(-25deg);
+            animation: shineMove 2.5s infinite;
+        }
+
+        @keyframes shineMove {
+            0% { left: -130%; }
+            100% { left: 130%; }
+        }
+
+        /* ICONS */
+        .cta-icon {
+            position: absolute;
+            width: 95px;
+            opacity: 0.9;
+        }
+
+        .cta-icon.left {
+            top: 20px;
+            left: 20px;
+        }
+
+        .cta-icon.right {
+            bottom: 20px;
+            right: 20px;
+        }
+    </style>
+
+    <!-- CTA CONTENT -->
+    <div class="cta-card">
+
+        <img src="https://img.icons8.com/color/96/money.png" class="cta-icon right">
+
+        <h2>Upgrade to Smarter Digital Banking</h2>
+        <p>Your trusted partner for secure transactions, instant transfers, and seamless financial growth.</p>
+
+        <!-- ⭐ FIXED BUTTON (NOW REDIRECTS TO /choose) -->
+        <a href="/select-account-type" class="cta-btn">
+            Open Your Account →
+            <span class="shine"></span>
+        </a>
+
+        <!-- If using Thymeleaf, use this instead:
+        <a th:href="@{/choose}" class="cta-btn">
+            Open Your Account →
+            <span class="shine"></span>
+        </a>
+        -->
+    </div>
+</section>
 
 <!-- FOOTER -->
 <footer>
@@ -349,6 +603,30 @@
     function closeModal(id){
         document.getElementById(id).classList.remove("show");
     }
+</script>
+<script src="https://unpkg.com/@lottiefiles/lottie-player@1.5.7/dist/lottie-player.js"></script>
+
+<script>
+    const counters = document.querySelectorAll('.counter');
+
+    counters.forEach(counter => {
+        const target = +counter.getAttribute('data-target');
+        const speed = 200;
+
+        const updateCounter = () => {
+            const value = +counter.innerText;
+            const increment = target / speed;
+
+            if (value < target) {
+                counter.innerText = Math.ceil(value + increment);
+                setTimeout(updateCounter, 20);
+            } else {
+                counter.innerText = target;
+            }
+        };
+
+        updateCounter();
+    });
 </script>
 
 </body>
