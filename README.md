@@ -1,81 +1,224 @@
-📘 NexaBank – Online Banking System (Admin + User Portal)
+# 📘 **NexaBank – Online Banking System (Admin + User Portal)**
 
-A full-stack Java Spring Boot banking simulation system featuring secure authentication, transaction management, admin dashboard, analytics, reporting, complaints, account deletion handling, and more.
+A full-stack **Java Spring Boot** banking simulation system featuring secure authentication, user and admin portals, transaction management, loan modules, analytics dashboards, PDF reporting, and complaint handling — designed to mimic real-world digital banking workflows.
 
-🚀 Features
-👤 User Portal
+This project is a major upgrade from the earlier **Java + MySQL console-based system**, now rebuilt using modern frameworks, layered architecture, and enterprise-level best practices.
 
-Create accounts & login with OTP
+---
 
-Deposit, withdraw, transfer money
+# 🚀 **Features**
 
-Transaction history
+## 👤 **User Portal**
 
-Loan application
+* ✔ Create account & login with **Email OTP**
+* ✔ Deposit, withdraw, transfer money
+* ✔ View transaction history & statements
+* ✔ Apply for loans
+* ✔ Raise complaints
+* ✔ Submit feedback
+* ✔ Request account deletion
+* ✔ Receive admin notices & updates
 
-Raise complaints & delete account requests
+---
 
-Provide feedback
+## 🛡️ **Admin Portal**
 
-🛡️ Admin Portal
+* ✔ Secure **Admin Login with OTP**
+* ✔ View all accounts & transactions
+* ✔ **Freeze / Unfreeze** user accounts
+* ✔ Approve / Reject loan applications
+* ✔ Manage complaints (reply, resolve)
+* ✔ Analytics Dashboard with:
 
-Secure admin login with OTP
+  * 📊 Activity heatmap
+  * 📈 Transaction volume charts
+  * 💼 Account metrics
+* ✔ Generate & export **CSV / PDF reports**
+* ✔ Manage account deletion workflow
+* ✔ View **admin activity logs**
+* ✔ View customer feedback
+* ✔ Send notices to users
 
-View all accounts & transactions
+---
 
-Freeze / Unfreeze accounts
+# 🧩 **Project Structure**
 
-Manage complaints (reply, resolve)
+```
+NexaBank/
+│
+├── src/main/java/com/nexabank/
+│   ├── controller/          # User + Admin controllers
+│   ├── service/             # Business logic layer
+│   ├── repository/          # Spring Data JPA repositories
+│   ├── model/               # Entities: Account, Transaction, Loan, Complaint, etc.
+│   ├── security/            # OTP, encryption, session security
+│   ├── util/                # PDF, CSV, mail utilities
+│   └── NexaBankApplication.java
+│
+├── src/main/resources/
+│   ├── templates/           # Thymeleaf HTML pages
+│   ├── static/              # CSS, JS, images
+│   ├── application.properties
+│   └── schema.sql           # MySQL schema and table definitions
+│
+├── README.md
+└── pom.xml
+```
 
-Approve / Reject loan applications
+---
 
-View & export reports (CSV / PDF)
+# 🗄️ **Database Schema Overview**
 
-Send notices to users
+### **1. accounts**
 
-Activity heatmap + analytics dashboard
+Stores user details, KYC info, balance, status.
 
-Manage account deletion requests
+### **2. transactions**
 
-View admin activity logs
+Records deposits, withdrawals, transfers.
 
-View customer feedback
+### **3. loans**
 
-🏗️ Tech Stack
-Backend
+Stores loan requests, status, messages.
 
-Java 21
+### **4. complaints**
 
-Spring Boot 3
+Tracks user complaints and admin replies.
 
-Spring MVC
+### **5. feedback**
 
-Spring Data JPA
+Stores user ratings and suggestions.
 
-Hibernate
+### **6. notices**
 
-MySQL
+Admin announcements sent to users.
 
-Thymeleaf
+### **7. admin_logs**
 
-iText / Flying Saucer (PDF generation)
+Tracks all admin actions for auditing.
 
-Frontend
+---
 
-HTML / CSS
+# 🏗️ **Tech Stack**
 
-Thymeleaf Templates
+## **Backend**
 
-JavaScript
+| Component       | Technology                  |
+| --------------- | --------------------------- |
+| Language        | Java 21                     |
+| Framework       | Spring Boot 3               |
+| Architecture    | MVC + Service Layer         |
+| ORM             | Spring Data JPA + Hibernate |
+| Database        | MySQL                       |
+| Template Engine | Thymeleaf                   |
+| Reporting       | iText / Flying Saucer (PDF) |
+| Email           | Jakarta Mail                |
+| Connection Pool | HikariCP                    |
 
-Chart.js
+---
 
-Others
+## **Frontend**
 
-Jakarta Mail (Email OTP + Notifications)
+* HTML5 / CSS3
+* Thymeleaf templating
+* JavaScript
+* Chart.js (Analytics Dashboard)
 
-HikariCP (Connection Pool)
+---
 
-Maven
+## **Other Tools**
 
-© 2025 Rithikaa — Released under the MIT License; free to use, modify, and share without warranty.
+* Maven
+* Lombok
+* BCrypt (for password hashing)
+* MySQL Workbench
+* Git & GitHub
+
+---
+
+# ⚙️ **Setup Instructions**
+
+### **1. Clone the Repository**
+
+```bash
+git clone https://github.com/<your-username>/NexaBank.git
+cd NexaBank
+```
+
+### **2. Create MySQL Database**
+
+```sql
+CREATE DATABASE nexabank;
+USE nexabank;
+```
+
+Run the tables provided in `schema.sql`.
+
+---
+
+### **3. Update Database Credentials**
+
+In `application.properties`:
+
+```properties
+spring.datasource.url=jdbc:mysql://localhost:3306/nexabank
+spring.datasource.username=root
+spring.datasource.password=yourpassword
+
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+```
+
+---
+
+### **4. Run the Project**
+
+```bash
+mvn spring-boot:run
+```
+
+Access:
+
+* **User Portal:** `http://localhost:8080/`
+* **Admin Portal:** `http://localhost:8080/admin/login`
+
+---
+
+# 🔐 **Security Features**
+
+* OTP login for users & admins
+* BCrypt encrypted passwords
+* Role-based authorization
+* Session timeout & protection
+* Account freezing system
+* Input validation (server + client side)
+* Activity logs for admin actions
+
+---
+
+# 🌱 **Future Enhancements**
+
+* Mobile App (Flutter / React Native)
+* AI-based fraud detection
+* Multi-currency support
+* Mini-statement SMS gateway
+* UPI-style QR payments
+* Dark mode UI
+
+---
+
+# 👤 **Author**
+
+**Buchigalla Jambava Dattudu**
+📧 Email: jambhava76@gmail.com
+🌐 GitHub: https://github.com/Jambhava76
+📝 Licensed under **MIT License** – free to use, modify, and distribute.
+
+---
+
+# 🏁 **Conclusion**
+
+**NexaBank** demonstrates the full power of **Spring Boot**, **MySQL**, and **Thymeleaf** in building an enterprise-level web banking system.
+It integrates authentication, transaction handling, admin governance, analytics, reporting, and real-time communication — making it a strong foundation for a real-world banking application.
+
+---
