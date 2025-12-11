@@ -44,7 +44,7 @@ View customer feedback
 🏗️ Tech Stack
 Backend
 
-Java 17
+Java 21
 
 Spring Boot 3
 
@@ -77,3 +77,5 @@ Jakarta Mail (Email OTP + Notifications)
 HikariCP (Connection Pool)
 
 Maven
+
+© 2025 Rithikaa — Released under the MIT License; free to use, modify, and share without warranty.
